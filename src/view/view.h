@@ -64,6 +64,8 @@ namespace umbriel {
     [[nodiscard]] bool onActiveWorkspace() const { return m_onActiveWorkspace; }
     [[nodiscard]] bool tiled() const { return m_tiled; }
     [[nodiscard]] bool floating() const { return !m_tiled; }
+    [[nodiscard]] const std::optional<std::string>& namedColumnName() const { return m_namedColumnName; }
+    [[nodiscard]] std::optional<int> namedColumnOrder() const { return m_namedColumnOrder; }
     [[nodiscard]] bool pinned() const { return m_pinned; }
     // True while an unfullscreen configure with size 0x0 is unacknowledged;
     // Workspace::arrange must not impose the column size yet.
@@ -118,6 +120,7 @@ namespace umbriel {
       std::string workspaceName;
       std::shared_ptr<const LayoutSnapshot> layoutSnapshot;
       LayoutMemberId layoutMember = 0;
+      bool ownsNamedColumnWidth = false;
       std::optional<LayoutMode> layoutModeOverride;
       // Position relative to the full logical output. Unlike the ordinary
       // usable-area memory, this stays stable while a returning panel has not
@@ -220,6 +223,7 @@ namespace umbriel {
     friend class Server;
     friend class Popup;
     friend class Overview;
+    friend class Workspace;
 
     struct ViewSurfaceWatch {
       View* view = nullptr;
@@ -373,6 +377,11 @@ namespace umbriel {
     ResolvedWindowRule m_initialRules;
     std::string m_initialRulesXdgTag;
     ContentType m_initialRulesContentType = ContentType::None;
+    std::optional<std::string> m_namedColumnName;
+    std::optional<int> m_namedColumnOrder;
+    // True for the member that created its current named scrolling column.
+    // Its own late width rule still applies after peers have joined.
+    bool m_ownsNamedColumnWidth = false;
 
     Server* m_server = nullptr;
     wlr_xdg_toplevel* m_toplevel = nullptr;

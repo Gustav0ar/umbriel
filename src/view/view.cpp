@@ -1683,6 +1683,8 @@ namespace umbriel {
     m_initialRules = rule;
     m_initialRulesXdgTag = m_xdgTag;
     m_initialRulesContentType = m_contentType;
+    m_namedColumnName = rule.defaultColumn;
+    m_namedColumnOrder = rule.defaultColumnOrder;
     if (rule.defaultFloating) {
       m_tiled = !*rule.defaultFloating;
     }
@@ -1878,6 +1880,9 @@ namespace umbriel {
     m_initialRules = {};
     m_initialRulesXdgTag.clear();
     m_initialRulesContentType = ContentType::None;
+    m_namedColumnName.reset();
+    m_namedColumnOrder.reset();
+    m_ownsNamedColumnWidth = false;
     m_ruleOpacity = 1.0F;
     m_hasMaximizeRestoreBox = false;
     m_floating.clearSizeRequest();
@@ -2009,8 +2014,13 @@ namespace umbriel {
         const Layout& layout = target != nullptr ? target->layout() : *fallbackLayout;
 
         Layout::InitialSize initial;
+        const std::optional<Layout::InitialSize> namedColumnInitial = target != nullptr && rule.defaultColumn
+            ? target->initialNamedColumnSize(this, usable, *rule.defaultColumn, rule.defaultColumnOrder, wantMaximized)
+            : std::nullopt;
         if (wantMaximizeToEdges) {
           initial = {.width = usable.width, .height = usable.height};
+        } else if (namedColumnInitial) {
+          initial = *namedColumnInitial;
         } else if (wantMaximized && target != nullptr) {
           initial = target->initialMaximizedSize(this, usable);
         } else {
@@ -2018,7 +2028,8 @@ namespace umbriel {
           initial = layout.initialSize(usable, widthFraction, target != nullptr ? target->focusedView() : nullptr);
         }
         const XdgSizeHints hints = xdgSizeHints(m_toplevel);
-        const int requestedWidth = (rule.defaultSize && !wantMaximized) ? (*rule.defaultSize)[0] : initial.width;
+        const int requestedWidth =
+            (rule.defaultSize && !wantMaximized && !namedColumnInitial) ? (*rule.defaultSize)[0] : initial.width;
         const int width =
             (requestedWidth > 0 && !wantMaximizeToEdges) ? clampXdgWidth(requestedWidth, hints) : requestedWidth;
         const int height =
@@ -2743,6 +2754,21 @@ namespace umbriel {
         m_borderFocusedState
     );
 
+    const bool namedColumnNameChanged =
+        rule.defaultColumn.has_value() && rule.defaultColumn != initiallyApplied.defaultColumn;
+    const bool namedColumnOrderChanged =
+        rule.defaultColumn.has_value() && rule.defaultColumnOrder != initiallyApplied.defaultColumnOrder;
+    std::optional<Workspace::NamedColumnChange> namedColumnChange;
+    if (namedColumnNameChanged) {
+      namedColumnChange = Workspace::NamedColumnChange::Name;
+    } else if (namedColumnOrderChanged) {
+      namedColumnChange = Workspace::NamedColumnChange::Order;
+    }
+    if (namedColumnChange) {
+      m_namedColumnName = rule.defaultColumn;
+      m_namedColumnOrder = rule.defaultColumnOrder;
+    }
+
     // Identity can arrive after map. Apply a newly selected one-shot value, but
     // never replay a value already applied at map over the user's later state.
     if (changedInitialRule(rule.defaultFloating, initiallyApplied.defaultFloating)) {
@@ -2756,11 +2782,25 @@ namespace umbriel {
         && (rule.defaultOutput != initiallyApplied.defaultOutput
             || rule.defaultWorkspace != initiallyApplied.defaultWorkspace);
     if (placementChanged && m_workspace != nullptr) {
+      const bool wasActivated = m_activated;
       WorkspaceGroup* targetGroup = windowRuleWorkspaceGroup(*m_server, rule, m_workspace->group());
       Workspace* target = windowRuleWorkspace(targetGroup, rule);
       if (target != nullptr && target != m_workspace) {
-        setWorkspace(target);
+        setWorkspace(target, false);
+        if (m_workspace == target) {
+          target->layoutAttach(this, rule.defaultWidth);
+          if (m_tiled && m_toplevel->scheduled.maximized && !m_maximizedToEdges) {
+            setMaximized(true);
+          }
+          if (wasActivated) {
+            m_server->focusView(this);
+          }
+        }
       }
+    }
+
+    if (namedColumnChange && m_workspace != nullptr) {
+      m_workspace->applyNamedColumnRule(this, rule.defaultWidth, *namedColumnChange);
     }
 
     if (changedInitialRule(rule.defaultPinned, initiallyApplied.defaultPinned)) {
@@ -2768,7 +2808,10 @@ namespace umbriel {
     }
 
     ScrollingLayout* scrolling = m_workspace != nullptr ? m_workspace->scrollingLayout() : nullptr;
-    if (changedInitialRule(rule.defaultWidth, initiallyApplied.defaultWidth) && m_tiled && scrolling != nullptr) {
+    if (changedInitialRule(rule.defaultWidth, initiallyApplied.defaultWidth)
+        && m_tiled
+        && scrolling != nullptr
+        && (!m_namedColumnName || m_ownsNamedColumnWidth)) {
       const int column = scrolling->columnOf(this);
       if (column >= 0) {
         scrolling->setWidthFraction(column, *rule.defaultWidth);

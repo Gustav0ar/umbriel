@@ -1582,6 +1582,7 @@ namespace umbriel {
             .workspaceName = workspace->name(),
             .layoutSnapshot = nullptr,
             .layoutMember = 0,
+            .ownsNamedColumnWidth = view->m_ownsNamedColumnWidth,
             .layoutModeOverride = workspace->layoutModeOverride(),
             .floatingOutputPosition = std::nullopt,
             .configGeneration = configStore().generation(),
@@ -1829,7 +1830,9 @@ namespace umbriel {
       std::vector<View*> exactViews;
       if (exact != nullptr) {
         for (View* view : exact->views) {
+          const bool ownsNamedColumnWidth = view->displacedHome()->ownsNamedColumnWidth;
           view->setWorkspace(workspace, false);
+          view->m_ownsNamedColumnWidth = ownsNamedColumnWidth;
           if (view->workspace() == workspace && view->mapped() && view->tiled()) {
             exactViews.push_back(view);
           }

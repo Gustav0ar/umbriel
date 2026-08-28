@@ -26,6 +26,11 @@ namespace umbriel {
 
   class Workspace {
   public:
+    enum class NamedColumnChange {
+      Name,
+      Order,
+    };
+
     Workspace(
         WorkspaceGroup& group, wlr_ext_workspace_handle_v1* handle, std::string id, std::string name, size_t index,
         ResolvedLayoutConfig layoutConfig
@@ -82,6 +87,14 @@ namespace umbriel {
     // Predict the first configure by applying the same insertion and full-width
     // transition that the mapped path will use on the authoritative layout.
     [[nodiscard]] Layout::InitialSize initialMaximizedSize(View* view, const wlr_box& usable) const;
+    // Predict the first configure for a view joining an existing named column.
+    [[nodiscard]] std::optional<Layout::InitialSize> initialNamedColumnSize(
+        View* view, const wlr_box& usable, std::string_view group, std::optional<int> order, bool maximized
+    ) const;
+    // Reposition a tiled view after a late title selects its named-column rule.
+    // initialWidth seeds a new column when its name has no existing member.
+    // A name change permits a split; an order-only change preserves manual placement.
+    void applyNamedColumnRule(View* view, std::optional<double> initialWidth, NamedColumnChange change);
     void layoutDetach(View* view, bool animate = false);
     void arrange(bool animate = true);
     // Record that the layout is stale instead of rebuilding it now. The work runs once, before the next frame, however
@@ -138,6 +151,7 @@ namespace umbriel {
   private:
     void applyPositions(bool animate);
     [[nodiscard]] wlr_box tiledTargetBox(const View* view, const wlr_box& usable) const;
+    [[nodiscard]] std::unique_ptr<Layout> previewLayout() const;
     [[nodiscard]] int layoutAttachIndex(const View* view) const;
     // Resize the focused floating window by usable-area fractions; an axis
     // without a fraction keeps its current basis size. False when no float is
