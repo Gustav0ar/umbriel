@@ -26,7 +26,7 @@ namespace umbriel {
 
   class Workspace {
   public:
-    enum class NamedColumnChange {
+    enum class NamedScrollingColumnChange {
       Name,
       Order,
     };
@@ -87,14 +87,15 @@ namespace umbriel {
     // Predict the first configure by applying the same insertion and full-width
     // transition that the mapped path will use on the authoritative layout.
     [[nodiscard]] Layout::InitialSize initialMaximizedSize(View* view, const wlr_box& usable) const;
-    // Predict the first configure for a view joining an existing named column.
-    [[nodiscard]] std::optional<Layout::InitialSize> initialNamedColumnSize(
+    // Predict the first configure for a view joining an existing named scrolling column.
+    [[nodiscard]] std::optional<Layout::InitialSize> initialNamedScrollingColumnSize(
         View* view, const wlr_box& usable, std::string_view group, std::optional<int> order, bool maximized
     ) const;
-    // Reposition a tiled view after a late title selects its named-column rule.
+    // Reposition a tiled view after a late title selects its named scrolling-column rule.
     // initialWidth seeds a new column when its name has no existing member.
     // A name change permits a split; an order-only change preserves manual placement.
-    void applyNamedColumnRule(View* view, std::optional<double> initialWidth, NamedColumnChange change);
+    void
+    applyNamedScrollingColumnRule(View* view, std::optional<double> initialWidth, NamedScrollingColumnChange change);
     void layoutDetach(View* view, bool animate = false);
     void arrange(bool animate = true);
     // Record that the layout is stale instead of rebuilding it now. The work runs once, before the next frame, however

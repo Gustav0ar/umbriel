@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Late title rules preserve established width ownership and may reclassify a member into a new named column.
+# Late title rules preserve named scrolling-column width ownership and may reclassify a member.
 set -euo pipefail
 
 readonly CLIENT="${UMBRIEL_UNMAP_CLIENT:-./build-debug/unmap-client}"
@@ -37,14 +37,14 @@ default_width_fraction = 0.5
 
 [[window_rule]]
 match.title = "^named-width-owner$"
-default_column = "width-stack"
-default_column_order = 10
+default_scrolling_column = "width-stack"
+default_scrolling_column_order = 10
 default_width = 0.25
 
 [[window_rule]]
 match.app_id = "^named-width-joiner$"
-default_column = "width-stack"
-default_column_order = 20
+default_scrolling_column = "width-stack"
+default_scrolling_column_order = 20
 
 [[window_rule]]
 match.title = "^named-width-late$"
@@ -52,34 +52,34 @@ default_width = 0.9
 
 [[window_rule]]
 match.title = "^named-reclass-owner$"
-default_column = "old-stack"
+default_scrolling_column = "old-stack"
 
 [[window_rule]]
 match.app_id = "^named-reclass-joiner$"
-default_column = "old-stack"
+default_scrolling_column = "old-stack"
 default_width = 0.4
 
 [[window_rule]]
 match.title = "^named-reclass-late$"
-default_column = "new-stack"
+default_scrolling_column = "new-stack"
 
 [[window_rule]]
 match.title = "^named-reclass-follower$"
-default_column = "new-stack"
+default_scrolling_column = "new-stack"
 
 [[window_rule]]
 match.app_id = "^named-order-joiner$"
-default_column = "order-stable"
+default_scrolling_column = "order-stable"
 default_workspace = 2
 
 [[window_rule]]
 match.title = "^named-order-late$"
-default_column_order = 10
+default_scrolling_column_order = 10
 default_width = 0.9
 
 [[window_rule]]
 match.title = "^named-order-owner$"
-default_column = "order-stable"
+default_scrolling_column = "order-stable"
 default_workspace = 2
 
 [[window_rule]]

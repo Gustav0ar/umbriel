@@ -243,8 +243,8 @@ namespace umbriel {
     std::optional<double> defaultWidth;  // column width fraction override
     std::optional<double> defaultHeight; // floating height fraction of the usable area
     std::optional<int> defaultWorkspace; // 1-64
-    std::optional<std::string> defaultColumn;
-    std::optional<int> defaultColumnOrder;
+    std::optional<std::string> defaultScrollingColumn;
+    std::optional<int> defaultScrollingColumnOrder;
     std::optional<bool> defaultFullscreen;
     std::optional<bool> defaultMaximizeToEdges;
     std::optional<bool> defaultMaximize;
@@ -277,8 +277,8 @@ namespace umbriel {
           && defaultWidth == other.defaultWidth
           && defaultHeight == other.defaultHeight
           && defaultWorkspace == other.defaultWorkspace
-          && defaultColumn == other.defaultColumn
-          && defaultColumnOrder == other.defaultColumnOrder
+          && defaultScrollingColumn == other.defaultScrollingColumn
+          && defaultScrollingColumnOrder == other.defaultScrollingColumnOrder
           && defaultFullscreen == other.defaultFullscreen
           && defaultMaximizeToEdges == other.defaultMaximizeToEdges
           && defaultMaximize == other.defaultMaximize
@@ -305,8 +305,8 @@ namespace umbriel {
     std::optional<double> defaultWidth;
     std::optional<double> defaultHeight;
     std::optional<int> defaultWorkspace;
-    std::optional<std::string> defaultColumn;
-    std::optional<int> defaultColumnOrder;
+    std::optional<std::string> defaultScrollingColumn;
+    std::optional<int> defaultScrollingColumnOrder;
     std::optional<bool> defaultFullscreen;
     std::optional<bool> defaultMaximizeToEdges;
     std::optional<bool> defaultMaximize;

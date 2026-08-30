@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Named-column rules stack real clients in configured order, not launch order.
+# Named scrolling-column rules stack real clients in configured order, not launch order.
 set -euo pipefail
 
 failed=0
@@ -30,31 +30,31 @@ default_width_fraction = 0.5
 
 [[window_rule]]
 match.title = "^named-later$"
-default_column = "browser-stack"
-default_column_order = 20
+default_scrolling_column = "browser-stack"
+default_scrolling_column_order = 20
 default_width = 0.6
 
 [[window_rule]]
 match.title = "^named-first$"
-default_column = "browser-stack"
+default_scrolling_column = "browser-stack"
 default_size = [300, 300]
-default_column_order = 10
+default_scrolling_column_order = 10
 default_width = 0.25
 
 [[window_rule]]
 match.title = "^named-delayed$"
-default_column = "browser-stack"
-default_column_order = 15
+default_scrolling_column = "browser-stack"
+default_scrolling_column_order = 15
 default_width = 0.4
 
 [[window_rule]]
 match.title = "^named-max-order$"
-default_column = "browser-stack"
-default_column_order = 2147483647
+default_scrolling_column = "browser-stack"
+default_scrolling_column_order = 2147483647
 
 [[window_rule]]
 match.title = "^named-unordered$"
-default_column = "browser-stack"
+default_scrolling_column = "browser-stack"
 EOF
 "$UMBRIEL" msg config-reload > /dev/null
 
@@ -131,7 +131,7 @@ if [[ $first_x != "$delayed_x" || $delayed_x != "$later_x" || $unrelated_x == "$
   failed=1
 fi
 if ((first_y >= delayed_y || delayed_y >= later_y)); then
-  echo "default_column_order did not place named clients in configured order: $windows"
+  echo "default_scrolling_column_order did not place named clients in configured order: $windows"
   failed=1
 fi
 if ((later_y >= max_order_y || max_order_y >= unordered_y)); then

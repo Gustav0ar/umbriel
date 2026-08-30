@@ -422,8 +422,8 @@ default_size = [800, 600]
 # appear higher in horizontal scrolling and farther left in vertical scrolling.
 # [[window_rule]]
 # match.app_id = "^firefox$"
-# default_column = "browsers"
-# default_column_order = 10
+# default_scrolling_column = "browsers"
+# default_scrolling_column_order = 10
 
 # [[window_rule]]
 # match.title = "^notificationtoasts_.+_desktop"

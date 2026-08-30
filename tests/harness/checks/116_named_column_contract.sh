@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Named columns honor scrolling orientation and workspace scope without changing floats or other layouts.
+# Named scrolling columns honor orientation and workspace scope without changing other layouts.
 set -euo pipefail
 
 readonly CLIENT="${UMBRIEL_UNMAP_CLIENT:-./build-debug/unmap-client}"
@@ -57,45 +57,45 @@ layout.mode = "master"
 
 [[window_rule]]
 match.title = "^named-vertical-later$"
-default_column = "vertical-stack"
-default_column_order = 20
+default_scrolling_column = "vertical-stack"
+default_scrolling_column_order = 20
 default_width = 0.25
 
 [[window_rule]]
 match.title = "^named-vertical-first$"
-default_column = "vertical-stack"
-default_column_order = 10
+default_scrolling_column = "vertical-stack"
+default_scrolling_column_order = 10
 default_width = 0.75
 
 [[window_rule]]
 match.title = "^named-vertical-max$"
-default_column = "vertical-stack"
-default_column_order = 15
+default_scrolling_column = "vertical-stack"
+default_scrolling_column_order = 15
 default_maximize = true
 
 [[window_rule]]
 match.title = "^named-split-(a|b|c|local)$"
-default_column = "split-stack"
+default_scrolling_column = "split-stack"
 
 [[window_rule]]
 match.title = "^named-split-a$"
-default_column_order = 10
+default_scrolling_column_order = 10
 
 [[window_rule]]
 match.title = "^named-split-b$"
-default_column_order = 20
+default_scrolling_column_order = 20
 
 [[window_rule]]
 match.title = "^named-split-c$"
-default_column_order = 15
+default_scrolling_column_order = 15
 
 [[window_rule]]
 match.title = "^named-master-"
-default_column = "ignored-master-stack"
+default_scrolling_column = "ignored-master-stack"
 
 [[window_rule]]
 match.title = "^named-float-"
-default_column = "ignored-floating-stack"
+default_scrolling_column = "ignored-floating-stack"
 default_floating = true
 EOF
 "$UMBRIEL" msg config-reload > /dev/null

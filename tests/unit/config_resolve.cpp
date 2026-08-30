@@ -184,8 +184,8 @@ UMBRIEL_TEST(windowRulesMergeMatchingFieldsInOrder) {
   app.blur = true;
   app.defaultFocused = false;
   app.defaultPinned = true;
-  app.defaultColumn = "browser-stack";
-  app.defaultColumnOrder = 20;
+  app.defaultScrollingColumn = "browser-stack";
+  app.defaultScrollingColumnOrder = 20;
   app.focusOnActivate = false;
   app.vrr = VrrMode::Disabled;
   app.allowTearing = false;
@@ -206,8 +206,8 @@ UMBRIEL_TEST(windowRulesMergeMatchingFieldsInOrder) {
   title.allowTearing = true;
   title.hdr = umbriel::HdrMode::On;
   title.defaultPinned = false;
-  title.defaultColumn = "terminals";
-  title.defaultColumnOrder = 10;
+  title.defaultScrollingColumn = "terminals";
+  title.defaultScrollingColumnOrder = 10;
   config.windowRules.push_back(std::move(title));
 
   WindowRule unfocused;
@@ -225,8 +225,8 @@ UMBRIEL_TEST(windowRulesMergeMatchingFieldsInOrder) {
   CHECK(resolved.defaultPosition->anchor == umbriel::WindowPositionAnchor::TopRight);
   CHECK(resolved.defaultFocused && !*resolved.defaultFocused);
   CHECK(resolved.defaultPinned && !*resolved.defaultPinned);
-  CHECK(resolved.defaultColumn && *resolved.defaultColumn == "terminals");
-  CHECK(resolved.defaultColumnOrder && *resolved.defaultColumnOrder == 10);
+  CHECK(resolved.defaultScrollingColumn && *resolved.defaultScrollingColumn == "terminals");
+  CHECK(resolved.defaultScrollingColumnOrder && *resolved.defaultScrollingColumnOrder == 10);
   CHECK(resolved.focusOnActivate && *resolved.focusOnActivate);
   CHECK(resolved.vrr == VrrMode::Always);
   CHECK(resolved.allowTearing && *resolved.allowTearing);
@@ -234,8 +234,8 @@ UMBRIEL_TEST(windowRulesMergeMatchingFieldsInOrder) {
 
   const auto appOnly = umbriel::resolveWindowRules(config, "foot", "editor", "", ContentType::None, false);
   CHECK(appOnly.defaultPinned && *appOnly.defaultPinned);
-  CHECK(appOnly.defaultColumn && *appOnly.defaultColumn == "browser-stack");
-  CHECK(appOnly.defaultColumnOrder && *appOnly.defaultColumnOrder == 20);
+  CHECK(appOnly.defaultScrollingColumn && *appOnly.defaultScrollingColumn == "browser-stack");
+  CHECK(appOnly.defaultScrollingColumnOrder && *appOnly.defaultScrollingColumnOrder == 20);
   CHECK(appOnly.vrr == VrrMode::Disabled);
   CHECK(appOnly.allowTearing && !*appOnly.allowTearing);
   CHECK(appOnly.hdr == umbriel::HdrMode::Off);

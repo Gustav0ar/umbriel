@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Late named-column rules preserve ownership, focus, width, and maximize state across relocation.
+# Late named scrolling-column rules preserve ownership, focus, width, and maximize state across relocation.
 set -euo pipefail
 
 readonly CLIENT="${UMBRIEL_UNMAP_CLIENT:-./build-debug/unmap-client}"
@@ -60,12 +60,12 @@ workspaces = 4
 
 [[window_rule]]
 match.app_id = "^named-move-owner$"
-default_column = "move-source"
+default_scrolling_column = "move-source"
 default_width = 0.4
 
 [[window_rule]]
 match.title = "^named-move-late$"
-default_column = "move-target"
+default_scrolling_column = "move-target"
 default_workspace = 2
 
 [[window_rule]]
@@ -74,12 +74,12 @@ default_workspace = 2
 
 [[window_rule]]
 match.app_id = "^named-max-move-owner$"
-default_column = "max-move-source"
+default_scrolling_column = "max-move-source"
 default_maximize = true
 
 [[window_rule]]
 match.title = "^named-max-move-late$"
-default_column = "max-move-target"
+default_scrolling_column = "max-move-target"
 default_workspace = 3
 
 [[window_rule]]
@@ -88,18 +88,18 @@ default_workspace = 3
 
 [[window_rule]]
 match.title = "^named-max-reclass-owner$"
-default_column = "max-reclass-source"
+default_scrolling_column = "max-reclass-source"
 default_workspace = 4
 
 [[window_rule]]
 match.app_id = "^named-max-reclass-joiner$"
-default_column = "max-reclass-source"
+default_scrolling_column = "max-reclass-source"
 default_workspace = 4
 default_maximize = true
 
 [[window_rule]]
 match.title = "^named-max-reclass-late$"
-default_column = "max-reclass-target"
+default_scrolling_column = "max-reclass-target"
 
 [[window_rule]]
 match.title = "^named-max-reclass-after$"
@@ -107,15 +107,15 @@ default_workspace = 4
 
 [[window_rule]]
 match.app_id = "^named-owner-width-owner$"
-default_column = "owner-width-stack"
+default_scrolling_column = "owner-width-stack"
 
 [[window_rule]]
 match.title = "^named-owner-width-peer$"
-default_column = "owner-width-stack"
+default_scrolling_column = "owner-width-stack"
 
 [[window_rule]]
 match.title = "^named-owner-width-late$"
-default_column_order = 10
+default_scrolling_column_order = 10
 default_width = 0.7
 EOF
 "$UMBRIEL" msg config-reload > /dev/null

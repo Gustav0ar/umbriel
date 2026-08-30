@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # harness: outputs=2
-# A named-column creator keeps width ownership after its output disappears and returns.
+# A named scrolling-column creator keeps width ownership after its output disappears and returns.
 set -euo pipefail
 
 readonly CLIENT="${UMBRIEL_UNMAP_CLIENT:-./build-debug/unmap-client}"
@@ -58,7 +58,7 @@ position = [1280, 0]
 
 [[window_rule]]
 match.app_id = "^named-output-owner$"
-default_column = "shared-refuge"
+default_scrolling_column = "shared-refuge"
 default_output = "HEADLESS-1"
 
 [[window_rule]]
@@ -67,12 +67,12 @@ default_width = 0.7
 
 [[window_rule]]
 match.title = "^named-output-peer$"
-default_column = "shared-refuge"
+default_scrolling_column = "shared-refuge"
 default_output = "HEADLESS-1"
 
 [[window_rule]]
 match.title = "^named-output-refuge$"
-default_column = "shared-refuge"
+default_scrolling_column = "shared-refuge"
 default_output = "HEADLESS-2"
 
 [[window_rule]]
@@ -93,16 +93,18 @@ spawn_client named-output-peer
 wait_for_windows 3
 
 # The home column temporarily joins a populated, identically named refuge.
-# Recreating the output restores its exact layout and creator ownership.
+# Settle its late width there, then verify exact restoration retains both the
+# creator's ownership and the newly resolved width.
 "$UMBRIEL" output-destroy HEADLESS-1 > /dev/null
 wait_for_output named-output-owner-placeholder HEADLESS-2
+printf 'u' >&"$owner_fd"
+wait_for_output named-output-owner-late HEADLESS-2
 created=$("$UMBRIEL" output-create HEADLESS-1)
 [[ $created == HEADLESS-1 ]] || { echo "expected HEADLESS-1, got '$created'"; exit 1; }
-wait_for_output named-output-owner-placeholder HEADLESS-1
+wait_for_output named-output-owner-late HEADLESS-1
 
 spawn_client named-output-after
 wait_for_windows 4
-printf 'u' >&"$owner_fd"
 wait_for_delta named-output-owner-late named-output-after 890
 
 echo "named-column width ownership survived output loss and exact layout restoration"
