@@ -94,6 +94,7 @@ namespace umbriel {
   struct Keybind;
 
   class Cursor;
+  class BackendManager;
   class FocusManager;
   class XwaylandSupervisor;
   class ConfigWatcher;
@@ -488,6 +489,7 @@ namespace umbriel {
     };
 
     wl_display* m_display = nullptr;
+    std::unique_ptr<BackendManager> m_backendManager;
     wlr_backend* m_backend = nullptr;
     wlr_session* m_session = nullptr;
     wlr_renderer* m_renderer = nullptr;
