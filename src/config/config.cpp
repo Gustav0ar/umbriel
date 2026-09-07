@@ -2120,7 +2120,7 @@ namespace umbriel {
         for (const auto& path : result.loadedFiles) {
           store.addWatchPath(path);
         }
-        if (result.missingIncludes && result.merged.contains("drm")) {
+        if ((result.missingIncludes || result.missingOptionalIncludes) && result.merged.contains("drm")) {
           emitDiag(
               ConfigDiagnostic::Severity::Error, nullptr, "cannot safely load DRM policy while an include is missing"
           );

@@ -316,6 +316,7 @@ namespace umbriel::configmerge {
               || (!error && status.type() == std::filesystem::file_type::not_found);
           if (missing) {
             if (optional) {
+              result.missingOptionalIncludes = true;
               continue;
             }
             result.missingIncludes = true;

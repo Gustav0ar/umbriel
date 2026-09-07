@@ -2198,6 +2198,19 @@ UMBRIEL_TEST(missingPolicyIncludeRequiresRootDrmIntentMarker) {
   CHECK(containsDiagnostic(store, "cannot safely load DRM policy while an include is missing"));
 }
 
+UMBRIEL_TEST(missingOptionalPolicyIncludeRequiresRootDrmIntentMarker) {
+  const TempConfig file;
+  file.write("[include.optional]\nfiles = [\"" + file.includeName() + "\"]\n\n[drm]\n");
+
+  ConfigStore& store = umbriel::configStore();
+  const uint64_t generation = store.generation();
+
+  CHECK(!store.load(file.path().c_str()));
+  CHECK_EQ(store.generation(), generation);
+  CHECK(!store.missingIncludes());
+  CHECK(containsDiagnostic(store, "cannot safely load DRM policy while an include is missing"));
+}
+
 UMBRIEL_TEST(inaccessibleIncludeCannotBeTreatedAsMissing) {
   const TempConfigTree tree;
   tree.write("config.toml", "[include]\nfiles = [\"restricted/hardware.toml\"]\n");

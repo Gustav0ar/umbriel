@@ -70,9 +70,9 @@ Paths are resolved relative to the file that declares them. `~` and `~/`
 expand to the user's home directory. `$VAR` and `${VAR}` expand environment
 variables.
 
-Missing files in `[include.optional]` are silently ignored and remain watched.
-Creating one applies it without a restart. An optional file that exists must
-contain valid TOML.
+Missing files in `[include.optional]` are silently ignored and remain watched
+unless the main file declares `[drm]`. Creating a non-DRM optional file applies
+it without a restart. An optional file that exists must contain valid TOML.
 
 Files in `[include]` are applied in list order, followed by files in
 `[include.optional]`. Values in the including file override every include.
@@ -82,8 +82,8 @@ Files in `[include]` are applied in list order, followed by files in
 both main and included configurations.
 
 If an included file defines `[drm]`, add an empty `[drm]` table to the main
-file. Umbriel then rejects a missing include instead of applying an incomplete
-exclusion list.
+file. Umbriel then rejects a missing required or optional include instead of
+applying an incomplete exclusion list.
 
 You can split your config into multiple files for clarity:
 
